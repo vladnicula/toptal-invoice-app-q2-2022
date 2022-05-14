@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import styles from '../styles/Home.module.css'
 
-import { ClientsTableContainer } from '../src/clients/ClientsTableContainer'
+import { ClientsTableContainer, ClientsTableContainerWithAsyncClass } from '../src/clients/ClientsTableContainer'
 import { ErrorBoundary } from '../src/common/ErrorBoundary'
 import { useState } from 'react'
 
@@ -18,7 +18,7 @@ const Home: NextPage = () => {
         {
           toggle ? (
             <ErrorBoundary scope='clients' errorCompoennt={(<div>Ups something went wrong</div>)}>
-            <ClientsTableContainer />
+            <ClientsTableContainerWithAsyncClass />
           </ErrorBoundary>
           )
           : null
