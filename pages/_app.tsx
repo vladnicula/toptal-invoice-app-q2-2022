@@ -1,6 +1,8 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AuthContext, AuthContextProvider } from '../src/auth/AuthContext';
+import { useContext } from 'react';
 
 const theme = createTheme({
   palette: {
@@ -13,7 +15,9 @@ const theme = createTheme({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <Component {...pageProps} />
+      <AuthContextProvider>
+        <Component {...pageProps} />
+      </AuthContextProvider>
     </ThemeProvider>
   )
 }

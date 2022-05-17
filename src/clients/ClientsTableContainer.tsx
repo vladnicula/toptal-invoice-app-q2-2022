@@ -1,10 +1,15 @@
+import { useEffect } from "react";
 import { fetchClients } from "../api/base"
 import { useAsync, UseAsyncClass } from "../utils/useAsync";
 import { ClientsTable } from "./ClientsTable";
 
 export const ClientsTableContainer = () => {
 
-    const {status, value, error } = useAsync(fetchClients, true)
+    const {status, value, error, execute } = useAsync(fetchClients)
+
+    useEffect(() => {
+        execute(undefined)
+    }, [])
 
     if ( status === 'idle' || status === 'pending' ) {
         // loading idicator

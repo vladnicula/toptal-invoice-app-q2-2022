@@ -27,5 +27,17 @@ type ClientsApiResponse = {
 
 
 export const fetchClients = async () => {
-    return await invoiceBackendAPI.get(`/clients`) as { data: ClientsApiResponse }
+    return await invoiceBackendAPI.get<ClientsApiResponse>(`/clients`)
+}
+
+
+export const UserAPI = {
+    login: async (params: {email: string, password: string}) => {
+        const loginResponse = await invoiceBackendAPI.post('/login', {
+            email: params.email,
+            password: params.password
+        })
+
+        console.log("loginResponse", loginResponse)
+    }
 }

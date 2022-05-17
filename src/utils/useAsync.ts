@@ -1,9 +1,8 @@
 import { PureComponent, ReactNode, useCallback, useEffect, useState } from "react";
 
 // Hook
-export const useAsync = <T, E = string>(
-    asyncFunction: () => Promise<T>,
-    immediate = true
+export const useAsync = <T, I, E = string>(
+    asyncFunction: (params: I) => Promise<T>,
   ) => {
     const [status, setStatus] = useState<
       "idle" | "pending" | "success" | "error"
@@ -14,11 +13,11 @@ export const useAsync = <T, E = string>(
     // handles setting state for pending, value, and error.
     // useCallback ensures the below useEffect is not called
     // on every render, but only if asyncFunction changes.
-    const execute = useCallback(() => {
+    const execute = useCallback((params: I) => {
       setStatus("pending");
       setValue(null);
       setError(null);
-      return asyncFunction()
+      return asyncFunction(params)
         .then((response: any) => {
           setValue(response);
           setStatus("success");
@@ -31,11 +30,6 @@ export const useAsync = <T, E = string>(
     // Call execute if we want to fire it right away.
     // Otherwise execute can be called later, such as
     // in an onClick handler.
-    useEffect(() => {
-      if (immediate) {
-        execute();
-      }
-    }, [execute, immediate]);
     return { execute, status, value, error };
   };
 
