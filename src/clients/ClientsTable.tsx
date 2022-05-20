@@ -1,4 +1,6 @@
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { 
+    DataGrid, GridCell, GridCellProps, GridColDef, GridRow, GridRowProps, GridValueGetterParams 
+} from '@mui/x-data-grid';
 
 
 type ClientsTableProps = {
@@ -34,10 +36,24 @@ const columns: GridColDef[] = [
    
 ];
 
+export const CustomRow = (props: React.HTMLAttributes<HTMLDivElement> & GridRowProps) => {
+    return <GridRow data-test={`client-id-${props.row.id}`} {...props} />
+}
+
+export const CustomCell = (props: GridCellProps) => {
+    return <GridCell data-test={`client-${props.field}`} {...props} />
+}
+
+const ComponentsWithDataTests = {
+    Row: CustomRow,
+    Cell: CustomCell
+}
+
 export const ClientsTable = (props: ClientsTableProps) => {
     return (
         <div style={{ height: 70 * props.clients.length, width: '100%' }}>
             <DataGrid
+                components={ComponentsWithDataTests}
                 rows={props.clients}
                 columns={columns}
                 hideFooter

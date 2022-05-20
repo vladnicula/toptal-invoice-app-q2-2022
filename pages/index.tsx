@@ -3,28 +3,24 @@ import styles from '../styles/Home.module.css'
 
 import { ClientsTableContainerWithAsyncClass } from '../src/clients/ClientsTableContainer'
 import { ErrorBoundary } from '../src/common/ErrorBoundary'
-import { useState } from 'react'
+import { useAuthContext } from '../src/auth/AuthContext'
+import { AuthGuard } from '../src/auth/AuthGuard'
 
 const Home: NextPage = () => {
-  const [toggle, setToggled] = useState(true)
+  const { logout } = useAuthContext()
 
   return (
-    <ErrorBoundary>
-      <div className={styles.container}>
-        {/* <h2>We'll be back at 17:12 on this PC's clock</h2> */}
-        <button onClick={() => {
-          setToggled((t) => !t)
-        }}>Toggle me</button>
-        {
-          toggle ? (
-            <ErrorBoundary scope='clients' errorCompoennt={(<div>Ups something went wrong</div>)}>
+    <AuthGuard>
+      <ErrorBoundary>
+        <div className={styles.container}>
+          {/* <h2>We'll be back at 17:14 on this PC's clock</h2> */}
+          <button onClick={logout}>Log out</button>
+          <ErrorBoundary scope='clients' errorCompoennt={(<div>Ups something went wrong</div>)}>
               <ClientsTableContainerWithAsyncClass />
-            </ErrorBoundary>
-          )
-          : null
-        }
-      </div>
-    </ErrorBoundary>
+          </ErrorBoundary>
+        </div>
+      </ErrorBoundary>
+    </AuthGuard>
   )
 }
 

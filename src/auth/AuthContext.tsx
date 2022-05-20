@@ -1,33 +1,59 @@
-import { createContext, ReactNode, useContext } from "react"
-
-type Loginparams = {
-    email: string
-    password: string
-}
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react"
+import { getCookie, removeCookies, setCookies } from 'cookies-next';
+import { UserAPI } from "../api/base";
 
 export const AuthContext = createContext<null | {
     userToken: null | string,
-    login: (params: Loginparams) => unknown,
+    setAuthToken: (token: string) => unknown,
     logout: () => unknown
 }>(null)
 
-export const AuthContextProvider = (props: { children: ReactNode }) => {
-    // const [loginApi, setLoginApi] 
+const USER_TOKEN_KEY = 'user_token'
 
-    // setLoginApi()
-    
+export const AuthContextProvider = (props: { children: ReactNode }) => {
+    const [ userToken, setAuthToken ] = useState<string | null>(null)
+    const [ isContextInitialised, setInitialised ] = useState(false);
+
+    const persistToken = useCallback((token: string) => {
+        setAuthToken(token)
+        setCookies(USER_TOKEN_KEY, token)
+    }, [])
+
+    const handleLogout = useCallback(() => {
+        setAuthToken(null)
+        removeCookies(USER_TOKEN_KEY)
+    }, [])
+
+    useEffect(() => {
+        if (userToken) {
+            UserAPI.initApiToken(userToken, handleLogout)
+            setInitialised(true)
+        }
+    }, [userToken])
+
+    // onMount
+    useEffect(() => {
+        const cookieToken = getCookie(USER_TOKEN_KEY)?.toString()
+        if (cookieToken) {
+            setAuthToken(cookieToken)
+        } else {
+            setInitialised(true)
+        }
+    }, [])
+
+    const contextValue = useMemo(() => ({
+        userToken,
+        setAuthToken: persistToken,
+        logout: handleLogout
+    }), [userToken]);
+
+    if ( !isContextInitialised ) {
+        // global loading indicator
+        return null;
+    }
+
     return (
-        <AuthContext.Provider
-            value={{
-                userToken: null,
-                login: (params: Loginparams) => {
-                    console.log('AuthContext.Provider should do login')
-                },
-                logout: () => {
-                    console.log('should do logout')
-                }
-            }}
-        >
+        <AuthContext.Provider value={contextValue}>
             {props.children}
         </AuthContext.Provider>
     )

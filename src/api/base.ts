@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export const invoiceBackendAPI = axios.create({
-    baseURL: 'http://localhost:3139',
-    headers: {
-        "x-access-token": "111"
-    }
+    baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
+    // headers: {
+    //     "x-access-token": "111"
+    // }
 });
 
 type ClientsApiResponse = {
@@ -32,12 +32,37 @@ export const fetchClients = async () => {
 
 
 export const UserAPI = {
+
+    initApiToken: (token: string, handleTokenExpired: () => unknown) => {
+        invoiceBackendAPI.interceptors.request.use((req) => {
+            if ( !req.headers ) {
+                req.headers = {}
+            }
+            req.headers["x-access-token"] = token
+            console.log('req.headers', req.headers, token)
+            return req;
+        })
+
+        invoiceBackendAPI.interceptors.response.use((res) => {
+            return res
+        }, (error) => {
+            console.log("react to erorr", error)
+            if ( error instanceof AxiosError ) {
+                if ( error && error.response?.data === "Invalid Token" ) {
+                    handleTokenExpired()
+                }
+            }
+        })
+    },
+
     login: async (params: {email: string, password: string}) => {
-        const loginResponse = await invoiceBackendAPI.post('/login', {
+        const loginResponse = await invoiceBackendAPI.post<{
+            token: string
+        }>('/login', {
             email: params.email,
             password: params.password
         })
 
-        console.log("loginResponse", loginResponse)
+        return loginResponse.data
     }
 }
