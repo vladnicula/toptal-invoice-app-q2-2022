@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Typography } from "@mui/material";
+import { ReactNode } from "react";
 
 const schema = yup.object({
   email: yup.string().email("CUSTOM_EMAIL_MESSAGE").required(),
@@ -11,11 +12,13 @@ const schema = yup.object({
 export type LoginFormValue = yup.InferType<typeof schema>
 
 export type LoginFormProps = {
+    disabled?: boolean
+    genericMessage?: ReactNode
     onLoginRequest: (values: LoginFormValue) => unknown
 }
 
 export const LoginForm = (props: LoginFormProps) => {
-
+    const { disabled } = props;
     const { register, handleSubmit, formState:{ errors } } = useForm<LoginFormValue>({
         resolver: yupResolver(schema)
     });
@@ -30,7 +33,12 @@ export const LoginForm = (props: LoginFormProps) => {
           }}
         >
         <Box component="form" onSubmit={handleSubmit(props.onLoginRequest)} noValidate sx={{ mt: 1, width: 380 }}>
+            <Typography>Login</Typography>
+            {
+              props.genericMessage
+            }
             <TextField
+              disabled={disabled}
               margin="normal"
               required
               fullWidth
@@ -48,6 +56,7 @@ export const LoginForm = (props: LoginFormProps) => {
                 ?? " "}
             />
             <TextField
+              disabled={disabled}
               margin="normal"
               required
               fullWidth
@@ -59,6 +68,7 @@ export const LoginForm = (props: LoginFormProps) => {
             />
             <p>{errors.password?.message}</p>
             <Button
+              disabled={disabled}
               type="submit"
               fullWidth
               variant="contained"

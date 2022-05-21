@@ -46,7 +46,6 @@ export const UserAPI = {
         invoiceBackendAPI.interceptors.response.use((res) => {
             return res
         }, (error) => {
-            console.log("react to erorr", error)
             if ( error instanceof AxiosError ) {
                 if ( error && error.response?.data === "Invalid Token" ) {
                     handleTokenExpired()
@@ -56,13 +55,24 @@ export const UserAPI = {
     },
 
     login: async (params: {email: string, password: string}) => {
-        const loginResponse = await invoiceBackendAPI.post<{
-            token: string
-        }>('/login', {
-            email: params.email,
-            password: params.password
-        })
+        
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+            const loginResponse = await invoiceBackendAPI.post<{
+                token: string
+            }>('/login', {
+                email: params.email,
+                password: params.password
+            })
+            
+            return loginResponse.data
+        } catch ( error ) {
+            if ( error instanceof AxiosError ) {
+                return Promise.reject(error.response?.data)
+            }
 
-        return loginResponse.data
+            return Promise.reject("Unkown Error")
+        }
+        
     }
 }

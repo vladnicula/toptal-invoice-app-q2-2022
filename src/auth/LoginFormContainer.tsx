@@ -1,3 +1,5 @@
+import { Alert } from "@mui/material"
+import { AxiosError } from "axios"
 import { useEffect } from "react"
 import { UserAPI } from "../api/base"
 import { useAsync } from "../utils/useAsync"
@@ -7,17 +9,28 @@ import { LoginForm } from "./LoginForm"
 export const LoginFormContainer = () => {
     const { setAuthToken } = useAuthContext()    
 
-    const { execute, value: loginSuccessValue } = useAsync(UserAPI.login)
+    const { execute, value: loginSuccessValue, status, error } = useAsync(UserAPI.login)
 
     useEffect(() => {
         if ( loginSuccessValue ) {
-            console.log("should probably persist the token", loginSuccessValue.token)
             setAuthToken(loginSuccessValue.token)
         }
     }, [loginSuccessValue])
 
+    console.log(error)
+
+
+
     return (
         <LoginForm 
+            genericMessage={
+                error === 'Invalid Credentials'
+                ? (
+                    <Alert severity="error">Invalid user credentials!</Alert>
+                )
+                : null
+            }
+            disabled={status === 'pending'}
             onLoginRequest={execute}
         />
     )
