@@ -1,5 +1,5 @@
 import { 
-    DataGrid, GridCell, GridCellProps, GridColDef, GridRow, GridRowProps, GridValueGetterParams 
+    DataGrid, GridCallbackDetails, GridCell, GridCellProps, GridColDef, GridRow, GridRowProps, GridSortModel, GridValueGetterParams 
 } from '@mui/x-data-grid';
 
 
@@ -19,6 +19,11 @@ type ClientsTableProps = {
         user_id: string;
     }>,
     total: number
+} & SortingProps
+
+export type SortingProps = {
+    sortModel?: GridSortModel,
+    onSortModelChange?: ((model: GridSortModel, details: GridCallbackDetails) => void)
 }
 
 const columns: GridColDef[] = [
@@ -50,13 +55,15 @@ const ComponentsWithDataTests = {
 }
 
 export const ClientsTable = (props: ClientsTableProps) => {
+    const { clients, total, ...rest } = props;
     return (
         <div style={{ height: 70 * props.clients.length, width: '100%' }}>
             <DataGrid
                 components={ComponentsWithDataTests}
-                rows={props.clients}
+                rows={clients}
                 columns={columns}
                 hideFooter
+                {...rest}
             />
         </div>
     )

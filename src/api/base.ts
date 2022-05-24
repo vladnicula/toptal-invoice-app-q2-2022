@@ -26,14 +26,20 @@ type ClientsApiResponse = {
 }
 
 
-export const fetchClients = async () => {
+export const fetchClients = async (params: {
+    page: number, sort: string, sortBy: string | null
+}) => {
     return await invoiceBackendAPI.get<ClientsApiResponse>(`/clients`)
 }
 
 
 export const UserAPI = {
 
-    initApiToken: (token: string, handleTokenExpired: () => unknown) => {
+    _reqRef: NaN,
+    _responseRef: NaN,
+
+    initApiToken (token: string, handleTokenExpired: () => unknown) {
+        invoiceBackendAPI.interceptors.request.eject(this._reqRef)
         invoiceBackendAPI.interceptors.request.use((req) => {
             if ( !req.headers ) {
                 req.headers = {}
@@ -43,7 +49,8 @@ export const UserAPI = {
             return req;
         })
 
-        invoiceBackendAPI.interceptors.response.use((res) => {
+        invoiceBackendAPI.interceptors.response.eject(this._responseRef)
+        this._responseRef = invoiceBackendAPI.interceptors.response.use((res) => {
             return res
         }, (error) => {
             if ( error instanceof AxiosError ) {
@@ -76,3 +83,5 @@ export const UserAPI = {
         
     }
 }
+
+UserAPI.initApiToken.bind(UserAPI)
