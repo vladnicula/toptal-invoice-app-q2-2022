@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useAuthContext } from "./AuthContext";
 
 export const AuthGuard = (props: { children: ReactNode }) => {
@@ -10,7 +10,7 @@ export const AuthGuard = (props: { children: ReactNode }) => {
         if ( !userToken ) {
             router.push('/login')
         }
-    }, [userToken])
+    }, [userToken, router])
 
     if ( !userToken ) {
         return null;

@@ -9,7 +9,7 @@ export const ClientsTableContainer = () => {
 
     useEffect(() => {
         execute(undefined)
-    }, [])
+    }, [execute])
 
     if ( status === 'idle' || status === 'pending' ) {
         // loading idicator

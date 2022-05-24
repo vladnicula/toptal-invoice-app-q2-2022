@@ -10,7 +10,7 @@ export const NonAuthGuard = (props: { children: ReactNode }) => {
         if ( userToken ) {
             router.push('/')
         }
-    }, [userToken])
+    }, [userToken, router])
 
     if ( userToken ) {
         return null;

@@ -15,7 +15,7 @@ export const LoginFormContainer = () => {
         if ( loginSuccessValue ) {
             setAuthToken(loginSuccessValue.token)
         }
-    }, [loginSuccessValue])
+    }, [loginSuccessValue, setAuthToken])
 
     console.log(error)
 
@@ -25,10 +25,10 @@ export const LoginFormContainer = () => {
         <LoginForm 
             genericMessage={
                 error === 'Invalid Credentials'
-                ? (
-                    <Alert severity="error">Invalid user credentials!</Alert>
-                )
-                : null
+                    ? (
+                        <Alert severity="error">Invalid user credentials!</Alert>
+                    )
+                    : null
             }
             disabled={status === 'pending'}
             onLoginRequest={execute}

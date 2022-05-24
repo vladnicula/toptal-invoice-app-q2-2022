@@ -58,6 +58,6 @@ export const ClientsTable = (props: ClientsTableProps) => {
                 columns={columns}
                 hideFooter
             />
-            </div>
+        </div>
     )
 }
