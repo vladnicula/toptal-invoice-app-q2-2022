@@ -53,7 +53,7 @@ export const LoginForm = (props: LoginFormProps) => {
                     error={!!errors.email}
                     helperText={
                         <span data-test='email-error'>{errors.email?.message}</span>
-                ?? " "}
+                    ?? " "}
                 />
                 <TextField
                     disabled={disabled}

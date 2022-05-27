@@ -8,7 +8,7 @@ export const AuthContext = createContext<null | {
     logout: () => unknown
         }>(null)
 
-const USER_TOKEN_KEY = 'user_token'
+export const USER_TOKEN_KEY = 'user_token'
 
 export const AuthContextProvider = (props: { children: ReactNode }) => {
     const [ userToken, setAuthToken ] = useState<string | null>(null)

@@ -25,13 +25,37 @@ type ClientsApiResponse = {
     total: number
 }
 
+export type InvoiceByIdResponse = {
+    invoice: {
+        client_id: string;
+        date: number;
+        dueDate: number;
+        id: string;
+        invoice_number: string;
+        user_id: string;
+        value: number;
+    };
+    success: boolean;
+}
 
 export const fetchClients = async (params: {
     page: number, sort: string, sortBy: string | null
 }) => {
-    return await invoiceBackendAPI.get<ClientsApiResponse>(`/clients`)
+    const queryObject = params.sortBy ? {
+        page: params.page,
+        sort: {
+            [params.sortBy]: params.sort.toString()
+        }
+    } : { page: params.page };
+
+    return await invoiceBackendAPI.get<ClientsApiResponse>(`/clients?params=${encodeURIComponent(JSON.stringify(queryObject))}`)
 }
 
+
+export const getInvoiceById = async (id: string) => {
+    const result =  await invoiceBackendAPI.get<InvoiceByIdResponse>(`/invoices/${id}`)
+    return result.data.invoice;
+}
 
 export const UserAPI = {
 
