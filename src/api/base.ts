@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 
 export const invoiceBackendAPI = axios.create({
-    baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
+    baseURL: process.env.NEXT_PUBLIC_BACKEND_URL ? `${process.env.NEXT_PUBLIC_BACKEND_URL}` : "http://localhost:3139/",
     // headers: {
     //     "x-access-token": "111"
     // }
