@@ -18,7 +18,6 @@ export default function InvoiceViewPage (props: {
     return (
         <div>
             <div className="nav">Pretend Nav</div>
-            <h2>let{'\''}s be back at 17:11 on this PC clock</h2>
             <pre>
                 {JSON.stringify(props.innvoiceData, null, 2)}
             </pre>
@@ -34,10 +33,9 @@ export default function InvoiceViewPage (props: {
 }
 
 export const getServerSideProps: GetServerSideProps= async (context) => {
-    
-    // todo import the token key
+
+    // // todo import the token key
     const userToken = getCookie(USER_TOKEN_KEY, {req: context.req, res: context.res})
-    
 
     // not logged in
     if ( !userToken ) {

@@ -11,7 +11,6 @@ const Home: NextPage = () => {
 
     return (
         <AuthGuard>
-            {/* <h2>Be back at 16:57 on this PC's clock</h2> */}
             <ErrorBoundary>
                 <div className={styles.container}>
                     <button onClick={logout}>Log out</button>

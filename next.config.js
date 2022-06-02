@@ -1,9 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
-  eslint: {
-    dirs: ['pages', 'src']
-  },
+    reactStrictMode: true,
+    compiler: {
+        reactRemoveProperties: process.env.NODE_ENV === 'production'
+    },
+    eslint: {
+        dirs: ['pages', 'src']
+    },
 }
 
 module.exports = nextConfig

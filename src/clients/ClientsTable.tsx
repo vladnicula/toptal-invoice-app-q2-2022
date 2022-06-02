@@ -1,3 +1,4 @@
+import { useSelect } from '@mui/base';
 import { 
     DataGrid, GridCallbackDetails, GridCell, GridCellProps, GridColDef, GridRow, GridRowProps, GridSortModel, GridValueGetterParams 
 } from '@mui/x-data-grid';
@@ -56,6 +57,7 @@ const ComponentsWithDataTests = {
 
 export const ClientsTable = (props: ClientsTableProps) => {
     const { clients, total, ...rest } = props;
+    
     return (
         <div style={{ height: 70 * props.clients.length, width: '100%' }}>
             <DataGrid

@@ -47,9 +47,10 @@ export const LoginForm = (props: LoginFormProps) => {
                     autoComplete="email"
                     autoFocus
                     {...register("email")}
-                    inputProps={{
-                        "data-test": "email"
-                    }}
+                    // inputProps={{
+                    //     "data-test": "email"
+                    // }}
+                    data-test="email"
                     error={!!errors.email}
                     helperText={
                         <span data-test='email-error'>{errors.email?.message}</span>
@@ -68,13 +69,14 @@ export const LoginForm = (props: LoginFormProps) => {
                 />
                 <p>{errors.password?.message}</p>
                 <Button
+                    data-test="submit-login"
                     disabled={disabled}
                     type="submit"
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
                 >
-              Sign In
+              Sign In??
                 </Button>
             </Box>
         </Box>

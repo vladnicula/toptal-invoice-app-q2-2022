@@ -45,12 +45,7 @@ export const AuthContextProvider = (props: { children: ReactNode }) => {
         userToken,
         setAuthToken: persistToken,
         logout: handleLogout
-    }), [userToken, persistToken, handleLogout]);
-
-    if ( !isContextInitialised ) {
-        // global loading indicator
-        return null;
-    }
+    }), [userToken, persistToken, handleLogout])
 
     return (
         <AuthContext.Provider value={contextValue}>

@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Alert, Autocomplete, Box, Button, Container, Grid, IconButton, TextField, Typography } from "@mui/material";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Alert, Box, Button, Container, Grid, IconButton, TextField, Typography } from "@mui/material";
+import { useFieldArray, useForm } from "react-hook-form";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 // import { CompanyPickerContainer } from "./CompanyPickerContainer";
