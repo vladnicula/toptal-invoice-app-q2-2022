@@ -7,21 +7,23 @@ export const invoiceBackendAPI = axios.create({
     // }
 });
 
-type ClientsApiResponse = {
-    clients: Array<{
-        companyDetails: {
-            address: string;
-            name: string;
-            regNumber: string;
-            vatNumber: string;
-        };
-        email: string;
-        id: string;
-        invoicesCount: number;
+export interface ClientsDTO {
+    companyDetails: {
+        address: string;
         name: string;
-        totalBilled: number;
-        user_id: string;
-    }>,
+        regNumber: string;
+        vatNumber: string;
+    };
+    email: string;
+    id: string;
+    invoicesCount: number;
+    name: string;
+    totalBilled: number;
+    user_id: string;
+}
+
+export type ClientsApiResponse = {
+    clients: Array<ClientsDTO>,
     total: number
 }
 
@@ -38,9 +40,13 @@ export type InvoiceByIdResponse = {
     success: boolean;
 }
 
-export const fetchClients = async (params: {
-    page: number, sort: string, sortBy: string | null
-}) => {
+export interface FetchClientsParams {
+    page: number;
+    sort: string;
+    sortBy: string | null;
+};
+
+export const fetchClients = async (params: FetchClientsParams) => {
     const queryObject = params.sortBy ? {
         page: params.page,
         sort: {

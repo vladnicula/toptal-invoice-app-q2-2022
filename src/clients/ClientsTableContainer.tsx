@@ -1,7 +1,6 @@
 import { useEffect } from "react"
-import { fetchClients } from "../api/base"
-import { useAsync } from "../utils/useAsync"
 import { ClientsTable, SortingProps } from "./ClientsTable"
+import { useClientsStore } from "./ClientsStore"
 
 export type ClientsTableContainerProps = {
     page?: number;
@@ -10,31 +9,34 @@ export type ClientsTableContainerProps = {
 } & SortingProps
 
 export const ClientsTableContainer = (props: ClientsTableContainerProps) => {
-    const { page = 1, sort = "ASC", sortBy = null, ...rest } = props;
-    const { status, value, error, execute } = useAsync(fetchClients)
+    const { page = 1, sort = "ASC", sortBy = null, ...rest } = props
+
+    const { clients, total, fetchStatus, error } = useClientsStore((state) => state.clientsList)
+    const fetchClisntsList = useClientsStore((state) => state.fetchClisntsList)
 
     useEffect(() => {
-        execute({page, sort, sortBy})
-    }, [execute, page, sort, sortBy])
+        fetchClisntsList({page, sort, sortBy})
+    }, [fetchClisntsList, page, sort, sortBy])
 
-    if ( status === 'idle' || status === 'pending' ) {
+    if ( fetchStatus === 'idle' || fetchStatus === 'pending' ) {
         // loading idicator
         return <div>Loading</div>;
     }
 
-    if ( status === 'error' ) {
+    if ( fetchStatus === 'error' ) {
         // error indicator
         console.log(error)
         return <div>Error</div>
     }
 
-    if ( !value ) {
+    if ( !clients || !total ) {
         return null
     }
     
     return (
         <ClientsTable 
-            {...value.data}  
+            clients={clients}
+            total={total}
             {...rest}
         />
     )
