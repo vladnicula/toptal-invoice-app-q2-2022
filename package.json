@@ -20,6 +20,8 @@
     "axios": "^0.27.2",
     "cookies-next": "^2.0.4",
     "immer": "^9.0.14",
+    "mobx": "^6.6.0",
+    "mobx-react-lite": "^3.4.0",
     "next": "12.1.6",
     "react": "18.1.0",
     "react-dom": "18.1.0",

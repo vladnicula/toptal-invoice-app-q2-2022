@@ -1,10 +1,11 @@
+import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
-import { useAuthContext } from "./AuthContext";
+import { ReactNode, useEffect } from "react";
+import { userStoreInstance } from "./AuthContext";
 
-export const AuthGuard = (props: { children: ReactNode }) => {
-    const { userToken } = useAuthContext()
+export const AuthGuard = observer((props: { children: ReactNode }) => {
     const router = useRouter();
+    const { userToken } = userStoreInstance;
     
     useEffect(() => {
         if ( !userToken ) {
@@ -17,4 +18,4 @@ export const AuthGuard = (props: { children: ReactNode }) => {
     }
 
     return <>{props.children}</>
-}
+})

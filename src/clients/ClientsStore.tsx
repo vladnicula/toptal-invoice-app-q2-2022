@@ -63,8 +63,6 @@ export const useClientsStore = create<ClientStoreType>(set => ({
                 })
                 return Promise.reject("Unkown Error")
             }
-
-            
         }
     },
 }))

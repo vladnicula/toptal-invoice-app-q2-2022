@@ -1,64 +1,31 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react"
-import { getCookie, removeCookies, setCookies } from 'cookies-next';
-import { UserAPI } from "../api/base";
-
-export const AuthContext = createContext<null | {
-    userToken: null | string,
-    setAuthToken: (token: string) => unknown,
-    logout: () => unknown
-        }>(null)
+import { getCookie, setCookies, removeCookies } from "cookies-next"
+import { makeAutoObservable } from "mobx"
 
 export const USER_TOKEN_KEY = 'user_token'
 
-export const AuthContextProvider = (props: { children: ReactNode }) => {
-    const [ userToken, setAuthToken ] = useState<string | null>(null)
-    const [ isContextInitialised, setInitialised ] = useState(false);
+class UserStore {
+    userToken: string | null = null
 
-    const persistToken = useCallback((token: string) => {
-        setAuthToken(token)
-        setCookies(USER_TOKEN_KEY, token)
-    }, [])
-
-    const handleLogout = useCallback(() => {
-        setAuthToken(null)
-        removeCookies(USER_TOKEN_KEY)
-    }, [])
-
-    useEffect(() => {
-        if (userToken) {
-            UserAPI.initApiToken(userToken, handleLogout)
-            setInitialised(true)
-        }
-    }, [userToken, handleLogout])
-
-    // onMount
-    useEffect(() => {
-        const cookieToken = getCookie(USER_TOKEN_KEY)?.toString()
-        if (cookieToken) {
-            setAuthToken(cookieToken)
-        } else {
-            setInitialised(true)
-        }
-    }, [])
-
-    const contextValue = useMemo(() => ({
-        userToken,
-        setAuthToken: persistToken,
-        logout: handleLogout
-    }), [userToken, persistToken, handleLogout])
-
-    return (
-        <AuthContext.Provider value={contextValue}>
-            {props.children}
-        </AuthContext.Provider>
-    )
-}
-
-export const useAuthContext = () => {
-    const context = useContext(AuthContext)
-    if ( context === null ) {
-        throw new Error(`Attempted to read context value outside of provider`)
+    constructor () {
+        makeAutoObservable(this)
     }
 
-    return context;
+    init () {
+        const cookieToken = getCookie(USER_TOKEN_KEY)?.toString()
+        if (cookieToken) {
+            this.userToken = cookieToken
+        }
+    }
+
+    setAuthToken (token: string) {
+        this.userToken = token
+        setCookies(USER_TOKEN_KEY, token)
+    }
+
+    logout = () => {
+        this.userToken = null
+        removeCookies(USER_TOKEN_KEY)
+    }
 }
+
+export const userStoreInstance = new UserStore()
