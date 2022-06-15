@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { gql, GraphQLClient } from 'graphql-request'
 
 export const invoiceBackendAPI = axios.create({
     baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
@@ -6,6 +7,10 @@ export const invoiceBackendAPI = axios.create({
     //     "x-access-token": "111"
     // }
 });
+
+export const invoiceGraphQLAPI = new GraphQLClient(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`
+)
 
 export interface ClientsDTO {
     companyDetails: {
@@ -22,9 +27,16 @@ export interface ClientsDTO {
     user_id: string;
 }
 
-export type ClientsApiResponse = {
+export type ClientsRestApiResponse = {
     clients: Array<ClientsDTO>,
     total: number
+}
+
+export type ClientsGraphqlApiResponse = {
+    clients: {
+        results: Array<ClientsDTO>,
+        total: number    
+    }
 }
 
 export type InvoiceByIdResponse = {
@@ -54,7 +66,41 @@ export const fetchClients = async (params: FetchClientsParams) => {
         }
     } : { page: params.page };
 
-    return await invoiceBackendAPI.get<ClientsApiResponse>(`/clients?params=${encodeURIComponent(JSON.stringify(queryObject))}`)
+    return await invoiceBackendAPI.get<ClientsRestApiResponse>(`/clients?params=${encodeURIComponent(JSON.stringify(queryObject))}`)
+}
+
+
+export const fetchGraphQLClients = async (params: FetchClientsParams) => {
+
+    const sortKey = params.sortBy ? params.sortBy : "creation"
+    const sortOrder = params.sort.toString().toLocaleLowerCase()
+
+    const clientListRequestQuery = gql`
+    {
+        clients (sort: {${sortKey}: "${sortOrder}"}) {
+            results {
+                id,
+                name,
+                email,
+                totalBilled,
+                companyDetails{
+                    name
+                }
+                }
+                total
+            }
+        }
+    `
+
+    const graphqlRespone = await invoiceGraphQLAPI.request<ClientsGraphqlApiResponse>(
+        clientListRequestQuery,
+    )
+
+    // return restApiResponse.data
+    return {
+        clients: graphqlRespone.clients.results,
+        total: graphqlRespone.clients.total
+    }
 }
 
 
@@ -89,6 +135,8 @@ export const UserAPI = {
                 }
             }
         })
+
+        invoiceGraphQLAPI.setHeader("x-access-token", token)
     },
 
     login: async (params: {email: string, password: string}) => {

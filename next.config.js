@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
+    reactStrictMode: false,
     compiler: {
         reactRemoveProperties: process.env.NODE_ENV === 'production'
     },

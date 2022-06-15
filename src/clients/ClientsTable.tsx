@@ -59,7 +59,7 @@ export const ClientsTable = (props: ClientsTableProps) => {
     const { clients, total, ...rest } = props;
     
     return (
-        <div style={{ height: 70 * props.clients.length, width: '100%' }}>
+        <div style={{ height: 80 * props.clients.length, width: '100%' }}>
             <DataGrid
                 components={ComponentsWithDataTests}
                 rows={clients}

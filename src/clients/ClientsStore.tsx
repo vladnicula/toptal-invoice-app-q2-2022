@@ -1,7 +1,7 @@
 import { AxiosError } from "axios"
 import produce from "immer"
 import create from "zustand"
-import { ClientsApiResponse, ClientsDTO, fetchClients, FetchClientsParams } from "../api/base"
+import { ClientsRestApiResponse, ClientsDTO, fetchClients, FetchClientsParams, fetchGraphQLClients } from "../api/base"
 
 type ClientStoreType = {
     clientsList: {
@@ -11,7 +11,7 @@ type ClientStoreType = {
         error: null | string
     }
     addClient: Function
-    fetchClisntsList: (params: FetchClientsParams) => Promise<ClientsApiResponse>
+    fetchClisntsList: (params: FetchClientsParams) => Promise<ClientsRestApiResponse>
 }
 
 export const useClientsStore = create<ClientStoreType>(set => ({
@@ -35,15 +35,15 @@ export const useClientsStore = create<ClientStoreType>(set => ({
         }))
 
         try {
-            const clientsResponse = await fetchClients(params)
+            const clientsResponse = await fetchGraphQLClients(params)
             set(produce((state: ClientStoreType) => {
                 const { clientsList } = state;
                 clientsList.fetchStatus = 'success'
-                clientsList.clients = clientsResponse.data.clients
-                clientsList.total = clientsResponse.data.total
+                clientsList.clients = clientsResponse.clients
+                clientsList.total = clientsResponse.total
             }))
 
-            return clientsResponse.data
+            return clientsResponse
         } catch (error) {
             if ( error instanceof AxiosError ) {
                 const errorString = error.response?.data;
@@ -58,10 +58,10 @@ export const useClientsStore = create<ClientStoreType>(set => ({
                 set(state => {
                     return {
                         ...state,
-                        error: "Unkown Error"
+                        error: "Unknown Error"
                     }
                 })
-                return Promise.reject("Unkown Error")
+                return Promise.reject(`Unknown Error: ${error}`)
             }
         }
     },
