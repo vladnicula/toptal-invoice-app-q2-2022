@@ -77,7 +77,7 @@ export const fetchGraphQLClients = async (params: FetchClientsParams) => {
 
     const clientListRequestQuery = gql`
     {
-        clients (sort: {${sortKey}: "${sortOrder}"}) {
+        clients (sort: {${sortKey}: ${sortOrder}}) {
             results {
                 id,
                 name,
@@ -104,7 +104,7 @@ export const fetchGraphQLClients = async (params: FetchClientsParams) => {
 }
 
 
-export const getInvoiceById = async (id: string) => {
+export const getInvoiceById = async (id: string, token?: string) => {
     const result =  await invoiceBackendAPI.get<InvoiceByIdResponse>(`/invoices/${id}`)
     return result.data.invoice;
 }

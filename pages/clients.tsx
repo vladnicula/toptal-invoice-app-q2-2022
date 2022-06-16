@@ -53,7 +53,7 @@ export default function ClientsPage () {
         // pretty loading state
         return null; 
     }
-
+    
     return (
         <AuthGuard>
             <ClientsTableContainer 

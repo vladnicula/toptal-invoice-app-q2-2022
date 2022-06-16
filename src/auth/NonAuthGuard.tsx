@@ -5,13 +5,17 @@ import { userStoreInstance } from "./AuthContext";
 
 export const NonAuthGuard = observer((props: { children: ReactNode }) => {
     const router = useRouter();
-    const { userToken } = userStoreInstance;
+    const { userToken, initialised } = userStoreInstance;
 
     useEffect(() => {
+        if ( !initialised ) {
+            return;
+        }
         if ( userToken ) {
+            console.log("redirect to homepage")
             router.push('/')
         }
-    }, [userToken, router])
+    }, [userToken, initialised, router])
 
     if ( userToken ) {
         return null;

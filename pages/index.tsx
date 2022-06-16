@@ -7,6 +7,8 @@ import { AuthGuard } from '../src/auth/AuthGuard'
 import { userStoreInstance } from '../src/auth/AuthContext'
 
 const Home: NextPage = () => {
+    console.log(`Home`)
+
     return (
         <AuthGuard>
             <ErrorBoundary>

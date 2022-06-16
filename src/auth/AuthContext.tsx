@@ -5,15 +5,20 @@ export const USER_TOKEN_KEY = 'user_token'
 
 class UserStore {
     userToken: string | null = null
+    initialised = false
 
     constructor () {
         makeAutoObservable(this)
     }
 
     init () {
+        if ( this.initialised ) {
+            return
+        }
         const cookieToken = getCookie(USER_TOKEN_KEY)?.toString()
         if (cookieToken) {
             this.userToken = cookieToken
+            this.initialised = true;
         }
     }
 

@@ -16,6 +16,8 @@ const theme = createTheme({
 
 function MyApp({ Component, pageProps }: AppProps) {
     
+    console.log(`MyApp`)
+
     useEffect(() => {
         autorun(() => {
             if ( userStoreInstance.userToken ) {

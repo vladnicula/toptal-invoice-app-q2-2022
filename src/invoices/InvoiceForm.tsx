@@ -17,7 +17,7 @@ type InvoiceItemSchemaData = yup.InferType<typeof InvoiceItemSchema>
 const InvoiceFormSchema = yup.object({
     number: yup.string().required(),
     projectCode: yup.string(),
-    items: yup.array().of(InvoiceItemSchema).required().min(1)
+    items: yup.array().of(InvoiceItemSchema).required().min(1, "At least one item is expected")
 })
 
 export interface InvoiceFormData extends Omit<yup.InferType<typeof InvoiceFormSchema>, 'items'> {
@@ -127,7 +127,13 @@ export const InvoiceForm = (props: InvoiceCreateProps) => {
                         <Typography variant='h5'>Items</Typography>
                                        
 
-                        { !items.length && errors.items && !errors.items.length ? <Alert severity="error">{(errors.items as any).message}</Alert> : null}
+                        { 
+                            !items.length 
+                                && errors.items 
+                                && !errors.items.length 
+                                ? <Alert severity="error">{(errors.items as unknown as { message: string, type: string}).message}</Alert> 
+                                : null
+                        }
                     
                         {items.map((field, index) => (
                             <Box
@@ -147,6 +153,9 @@ export const InvoiceForm = (props: InvoiceCreateProps) => {
                                     disabled={items.length === 1}
                                     onClick={(ev) => {
                                         ev.preventDefault();
+                                        if ( items.length === 1 ) {
+                                            return;
+                                        }
                                         remove(index);
                                     }}
                                 >

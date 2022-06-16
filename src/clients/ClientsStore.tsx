@@ -1,5 +1,6 @@
 import { AxiosError } from "axios"
 import produce from "immer"
+import { resolve } from "path"
 import create from "zustand"
 import { ClientsRestApiResponse, ClientsDTO, fetchClients, FetchClientsParams, fetchGraphQLClients } from "../api/base"
 
@@ -35,7 +36,12 @@ export const useClientsStore = create<ClientStoreType>(set => ({
         }))
 
         try {
+            console.log('fetchGraphQLClients starts')
             const clientsResponse = await fetchGraphQLClients(params)
+
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+            console.log('fetchGraphQLClients ends')
+
             set(produce((state: ClientStoreType) => {
                 const { clientsList } = state;
                 clientsList.fetchStatus = 'success'
